@@ -19,89 +19,78 @@
   </style>
 </head>
 <body>
-  <h1>Items Available to Store Area Line Plot</h1>
+  <h1>Store Area to Items Available Scatter Plot</h1>
   <script>
-  // Set up dimensions for the plot
-  var margin = {top: 20, right: 20, bottom: 30, left: 40},
-      width = 960 - margin.left - margin.right,
-      height = 500 - margin.top - margin.bottom;
+    d3.csv("Stores.csv", function(error, data) {
+      data.forEach(function(d) {
+        d.Store_Area = +d.Store_Area;
+        d.Store_Area = +d.Store_Area;
+        d.Items_Available = +d.Items_Available;
+      });
 
-  // Set up x and y scales for the plot
-  var x = d3.scale.linear()
-      .range([0, width]);
+      var margin = {top: 20, right: 20, bottom: 30, left: 40},
+        width = 960 - margin.left - margin.right,
+        height = 500 - margin.top - margin.bottom;
 
-  var y = d3.scale.linear()
-      .range([height, 0]);
+      var x = d3.scale.linear()
+        .domain(d3.extent(data, function(d) { return d.Items_Available; }))
+        .range([0, width]);
 
-  // Set up x and y axes for the plot
-  var xAxis = d3.svg.axis()
-      .scale(x)
-      .orient("bottom");
+      var y = d3.scale.linear()
+        .domain(d3.extent(data, function(d) { return d.Store_Area; }))
+        .range([height, 0]);
 
-  var yAxis = d3.svg.axis()
-      .scale(y)
-      .orient("left");
+      var xAxis = d3.svg.axis()
+        .scale(x)
+        .orient("bottom");
 
-  // Create a SVG element to contain the plot
-  var svg = d3.select("#lineplot").append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      var yAxis = d3.svg.axis()
+        .scale(y)
+        .orient("left");
 
-  // Load in the Sales.csv dataset and convert columns to numeric values
-  d3.csv("Sales.csv", function(error, data) {
-    data.forEach(function(d) {
-      d.Store_Area = +d.Store_Area;
-      d.Items_Available = +d.Items_Available;
-    });
+      var svg = d3.select("body").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    // Set the domain of the x and y scales to the extent of the data
-    x.domain(d3.extent(data, function(d) { return d.Store_Area; })).nice();
-    y.domain(d3.extent(data, function(d) { return d.Items_Available; })).nice();
-
-    // Add x axis to the plot
-    svg.append("g")
+      svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + height + ")")
         .call(xAxis)
-      .append("text")
+        .append("text")
         .attr("class", "label")
         .attr("x", width)
         .attr("y", -6)
         .style("text-anchor", "end")
-        .text("Store Area");
+        .text("Items Available");
 
-    // Add y axis to the plot
-    svg.append("g")
+      svg.append("g")
         .attr("class", "y axis")
         .call(yAxis)
-      .append("text")
+        .append("text")
         .attr("class", "label")
         .attr("transform", "rotate(-90)")
         .attr("y", 6)
         .attr("dy", ".71em")
         .style("text-anchor", "end")
-        .text("Items Available");
+        .text("Store Area");
 
-    // Define the line function
-    var line = d3.svg.line()
-        .x(function(d) { return x(d.Store_Area); })
-        .y(function(d) { return y(d.Items_Available); });
-
-    // Add the line to the plot
-    svg.append("path")
-        .datum(data)
-        .attr("class", "line")
-        .attr("d", line);
-    
+      svg.selectAll(".dot")
+        .data(data)
+        .enter().append("circle")
+        .attr("class", "dot")
+        .attr("r", 3.5)
+        .attr("cx", function(d) { return x(d.Items_Available); })
+        .attr("cy", function(d) { return y(d.Store_Area); });
+      
       // Add title to the graph
         svg.append("text")
           .attr("x", (width / 2))
           .attr("y", 0 - (margin.top / 2))
           .attr("text-anchor", "middle")
           .style("font-size", "18px")
-          .text("Line Plot of Items Available vs. Store Area");
+          .text("Scatterplot of Store Area vs. Items Available");
     });
   </script>
 </body>
