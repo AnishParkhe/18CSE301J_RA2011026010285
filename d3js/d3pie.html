@@ -62,8 +62,9 @@
             return d.startAngle + d.endAngle < Math.PI ? "start" : "end";
           })
           .text(function(d) { return d.data.Store_ID; });
-      // Define color scale
-var color = d3.scaleOrdinal(d3.schemeCategory10);
+     
+      // Define the color scale
+var color = d3.scale.category10();
 
 // Define SVG element
 var svg = d3.select("body")
@@ -76,8 +77,7 @@ var legend = svg.append("g")
   .attr("class", "legend")
   .attr("transform", "translate(" + (width - 100) + "," + 20 + ")");
 
-// Define the color scale
-var color = d3.scale.category10();
+
 
 // Append the legend to the SVG element
 var legend = svg.selectAll(".legend")
