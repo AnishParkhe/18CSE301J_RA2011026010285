@@ -24,7 +24,6 @@
     d3.csv("Stores.csv", function(error, data) {
       data.forEach(function(d) {
         d.Store_Area = +d.Store_Area;
-        d.Store_Area = +d.Store_Area;
         d.Items_Available = +d.Items_Available;
       });
 
