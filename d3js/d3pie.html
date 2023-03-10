@@ -63,6 +63,30 @@
           })
           .text(function(d) { return d.data.Store_ID; });
       
+      // create a legend group
+var legend = svg.selectAll(".legend")
+  .data(pie(data))
+  .enter().append("g")
+  .attr("class", "legend")
+  .attr("transform", function(d, i) { 
+    return "translate(" + (width + 10) + "," + (i * 20 + 10) + ")"; 
+  });
+
+// append legend item rectangle
+legend.append("rect")
+  .attr("x", 0)
+  .attr("y", 0)
+  .attr("width", 10)
+  .attr("height", 10)
+  .style("fill", function(d) { return color(d.data.Store_ID); });
+
+// append legend item text
+legend.append("text")
+  .attr("x", 15)
+  .attr("y", 5)
+  .text(function(d) { return "Store " + d.data.Store_ID + ": " + d.data.Store_Area; });
+
+      
       // Add the title for the pie chart
       svg.append("text")
           .attr("x", 0)
