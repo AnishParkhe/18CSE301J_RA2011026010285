@@ -21,8 +21,8 @@
 
     // Define the line
     var valueline = d3.svg.line()
-        .x(function(d) { return x(d["Store Area"]); })
-        .y(function(d) { return y(d["Store Sales"]); });
+        .x(function(d) { return x(d["Store_Area"]); })
+        .y(function(d) { return y(d["Store_Sales"]); });
 
     // Adds the svg canvas
     var svg = d3.select("body")
@@ -36,13 +36,13 @@
     // Get the data
     d3.csv("Stores.csv", function(error, data) {
       data.forEach(function(d) {
-        d["Store Area"] = +d["Store Area"];
-        d["Store Sales"] = +d["Store Sales"];
+        d["Store_Area"] = +d["Store_Area"];
+        d["Store_Sales"] = +d["Store_Sales"];
       });
 
       // Scale the range of the data
-      x.domain(d3.extent(data, function(d) { return d["Store Area"]; }));
-      y.domain([0, d3.max(data, function(d) { return d["Store Sales"]; })]);
+      x.domain(d3.extent(data, function(d) { return d["Store_Area"]; }));
+      y.domain([0, d3.max(data, function(d) { return d["Store_Sales"]; })]);
 
 console.log(x.domain()); // check the x scale domain
 console.log(y.domain()); // check the y scale domain
