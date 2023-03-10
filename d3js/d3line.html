@@ -1,83 +1,73 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>D3 Line Graph Example</title>
-    <script src="https://d3js.org/d3.v7.min.js" charset="utf-8"></script>
-  </head>
-  <body>
-	  <center>
-	  <h1>Store Sales Line Graph</h1> </center>
-    <svg width="960" height="500"></svg>
-    <script>
+<head>
+  <meta charset="utf-8">
+  <title>D3 Line Graph</title>
+  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+</head>
+<body>
+  <script>
+    // Set the dimensions of the canvas / graph
+    var margin = {top: 30, right: 20, bottom: 30, left: 50},
+        width = 600 - margin.left - margin.right,
+        height = 270 - margin.top - margin.bottom;
 
-      // Set the dimensions and margins of the graph
-      var margin = {top: 60, right: 20, bottom: 30, left: 50},
-          width = 960 - margin.left - margin.right,
-          height = 500 - margin.top - margin.bottom;
+    // Parse the date / time
+    var parseDate = d3.time.format("%d-%b-%y").parse;
 
-      // Set the ranges
-      var x = d3.scaleLinear().range([0, width]);
-      var y = d3.scaleLinear().range([height, 0]);
+    // Set the ranges
+    var x = d3.scale.linear().range([0, width]);
+    var y = d3.scale.linear().range([height, 0]);
 
-      // Define the lines
-      var valueline1 = d3.line()
-          .x(function(d) { return x(d.Store_Area); })
-          .y(function(d) { return y(d.Store_Sales); });
+    // Define the line
+    var valueline = d3.svg.line()
+        .x(function(d) { return x(d["Store Area"]); })
+        .y(function(d) { return y(d["Store Sales"]); });
 
-      // Append the svg obgect to the body of the page
-      var svg = d3.select("svg")
-          .attr("width", width + margin.left + margin.right)
-          .attr("height", height + margin.top + margin.bottom)
+    // Adds the svg canvas
+    var svg = d3.select("body")
+        .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
         .append("g")
-          .attr("transform",
-                "translate(" + margin.left + "," + margin.top + ")");
+            .attr("transform",
+                  "translate(" + margin.left + "," + margin.top + ")");
 
-      // Load the data
-      d3.csv("Stores.csv", function(error, data) {
-	      console.log("Loaded data!");
-        if (error) throw error;
-
-        // Convert columns to numeric values
-        data.forEach(function(d) {
-          d.Store_ID = +d.Store_ID;
-          d.Store_Area = +d.Store_Area;
-          d.Items_Available = +d.Items_Available;
-          d.Daily_Customer_Count = +d.Daily_Customer_Count;
-          d.Store_Sales = +d.Store_Sales;
-        });
-
-        // Scale the range of the data
-        x.domain([0, d3.max(data, function(d) { return d.Store_Area; })]);
-        y.domain([0, d3.max(data, function(d) { return d.Store_Sales; })]);
-
-        // Add the valueline path.
-        svg.append("path")
-            .data([data])
-            .attr("class", "line")
-            .style("stroke", "blue")
-            .attr("d", valueline1);
-
-        // Add the X Axis
-        svg.append("g")
-            .attr("transform", "translate(0," + height + ")")
-            .call(d3.axisBottom(x));
-
-        // Add the Y Axis
-        svg.append("g")
-            .call(d3.axisLeft(y));
-
-        // Add title
-        svg.append("text")
-            .attr("x", (width / 2))
-            .attr("y", 0 - (margin.top / 2))
-            .attr("text-anchor", "middle")
-            .style("font-size", "16px")
-            .style("font-weight", "bold")
-            .text("Store Sales vs. Store Area");
-
+    // Get the data
+    d3.csv("Stores.csv", function(error, data) {
+      data.forEach(function(d) {
+        d["Store Area"] = +d["Store Area"];
+        d["Store Sales"] = +d["Store Sales"];
       });
 
-    </script>
-  </body>
+      // Scale the range of the data
+      x.domain(d3.extent(data, function(d) { return d["Store Area"]; }));
+      y.domain([0, d3.max(data, function(d) { return d["Store Sales"]; })]);
+
+      // Add the valueline path.
+      svg.append("path")
+          .attr("class", "line")
+          .attr("d", valueline(data));
+
+      // Add the X Axis
+      svg.append("g")
+          .attr("class", "x axis")
+          .attr("transform", "translate(0," + height + ")")
+          .call(d3.svg.axis().scale(x).orient("bottom"));
+
+      // Add the Y Axis
+      svg.append("g")
+          .attr("class", "y axis")
+          .call(d3.svg.axis().scale(y).orient("left"));
+
+      // Add a title
+      svg.append("text")
+          .attr("x", (width / 2))
+          .attr("y", 0 - (margin.top / 2))
+          .attr("text-anchor", "middle")
+          .style("font-size", "16px")
+          .text("Store Area vs. Store Sales");
+    });
+  </script>
+</body>
 </html>
