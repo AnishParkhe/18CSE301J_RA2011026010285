@@ -22,35 +22,45 @@
           height = 500,
           radius = Math.min(width, height) / 2;
 
-      var color = d3.scale.category20();
-
-      var arc = d3.svg.arc()
-          .outerRadius(radius - 10)
-          .innerRadius(0);
-
-      var pie = d3.layout.pie()
-          .sort(null)
-          .value(function(d) { return d.Store_Area; });
-
       var svg = d3.select("body").append("svg")
           .attr("width", width)
           .attr("height", height)
           .append("g")
           .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
-      var g = svg.selectAll(".arc")
-          .data(pie(data))
-          .enter().append("g")
-          .attr("class", "arc");
+        var color = d3.scale.category10();
 
-      g.append("path")
+        // filter the data to get top 10 store areas
+        var top10 = data.sort(function(a, b) {
+          return d3.descending(a.Store_Area, b.Store_Area);
+        }).slice(0, 10);
+
+        var arc = d3.svg.arc()
+          .outerRadius(radius - 50)
+          .innerRadius(0);
+
+        var pie = d3.layout.pie()
+          .value(function(d) { return d.Store_Area; });
+
+        var arcs = svg.selectAll("g.slice")
+          .data(pie(top10))
+          .enter()
+          .append("g")
+          .attr("class", "slice");
+
+        arcs.append("path")
           .attr("d", arc)
-          .style("fill", function(d) { return color(d.data.Store_ID); });
+          .attr("fill", function(d, i) { return color(i); });
 
-      g.append("text")
-          .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
-          .attr("dy", ".35em")
-          .style("text-anchor", "middle")
+        arcs.append("text")
+          .attr("transform", function(d) {
+            var pos = arc.centroid(d);
+            pos[0] = radius * 0.6 * (d.startAngle + d.endAngle < Math.PI ? 1 : -1);
+            return "translate(" + pos + ")";
+          })
+          .attr("text-anchor", function(d) {
+            return d.startAngle + d.endAngle < Math.PI ? "start" : "end";
+          })
           .text(function(d) { return d.data.Store_ID; });
       
       // Add the title for the pie chart
