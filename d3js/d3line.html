@@ -35,6 +35,7 @@
 
       // Load the data
       d3.csv("Stores.csv", function(error, data) {
+	      console.log("Loaded data!");
         if (error) throw error;
 
         // Convert columns to numeric values
