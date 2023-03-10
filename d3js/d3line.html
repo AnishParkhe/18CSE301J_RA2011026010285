@@ -22,8 +22,8 @@
 
     // Define the line
     var valueline = d3.svg.line()
-        .x(function(d) { return x(d["Daily Customer Count"]); })
-        .y(function(d) { return y(d["Store Sales"]); });
+        .x(function(d) { return x(d["Daily_Customer_Count"]); })
+        .y(function(d) { return y(d["Store_Sales"]); });
 
     // Adds the svg canvas
     var svg = d3.select("body")
