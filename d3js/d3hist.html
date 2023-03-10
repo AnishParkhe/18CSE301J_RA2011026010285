@@ -82,6 +82,14 @@
         .attr("r", 3.5)
         .attr("cx", function(d) { return x(d.Daily_Customer_Count); })
         .attr("cy", function(d) { return y(d.Store_Sales); });
+      
+      // Add title to the graph
+        svg.append("text")
+          .attr("x", (width / 2))
+          .attr("y", 0 - (margin.top / 2))
+          .attr("text-anchor", "middle")
+          .style("font-size", "18px")
+          .text("Scatterplot of Store Sales vs. Daily Customer Count");
     });
   </script>
 </body>
