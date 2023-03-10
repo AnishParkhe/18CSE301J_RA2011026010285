@@ -51,7 +51,7 @@
 		    .x(function(d) { return x(byState); })
 		    .y(function(d) { return y(d["2015"]); });
     
-    var valueline7 = d3.svg.line()
+    	var valueline7 = d3.svg.line()
 		    .x(function(d) { return x(byState); })
 		    .y(function(d) { return y(d["2016"]); });
 
@@ -78,7 +78,7 @@
         d["2015"] = +d["2015"];
         d["2016"] = +d["2016"];
 			});
-      byState = d3.group(data, d => d.State)
+      var byState = d3.group(data, d => d.State);
 			// Set the domain of the axes
 			x.domain(data.map(function(d) { return byState; }));
 			y.domain([0, d3.max(data, function(d) {
