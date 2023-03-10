@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Luxury Watch | Line Graph</title>
+	<script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+</head>
+<body><h1>Luxury Watch Line Graph</h1>
+	<script>
+		// Set the dimensions of the canvas
+		var margin = {top: 20, right: 20, bottom: 30, left: 50},
+		    width =2500 - margin.left - margin.right,
+		    height = 1000 - margin.top - margin.bottom;
+
+		// Parse the date/time
+		var parseDate = d3.time.format("%Y").parse;
+
+		// Set the ranges
+		var x = d3.scale.ordinal().rangeRoundBands([0, width], 0.1);
+		var y = d3.scale.linear().range([height, 0]);
+
+		// Define the axis
+		var xAxis = d3.svg.axis().scale(x)
+		    .orient("bottom");
+
+		var yAxis = d3.svg.axis().scale(y)
+		    .orient("left").ticks(5);
+
+		// Define the line
+		var valueline1 = d3.svg.line()
+		    .x(function(d) { return x(byState); })
+		    .y(function(d) { return y(d["2010"]); });
+		    
+		var valueline2 = d3.svg.line()
+		    .x(function(d) { return x(byState); })
+		    .y(function(d) { return y(d["2011"]); });
+		    
+		var valueline3 = d3.svg.line()
+		    .x(function(d) { return x(byState); })
+		    .y(function(d) { return y(d["2012"]); });
+    
+    var valueline4 = d3.svg.line()
+		    .x(function(d) { return x(byState); })
+		    .y(function(d) { return y(d["2013"]); });
+		    
+		var valueline5 = d3.svg.line()
+		    .x(function(d) { return x(byState); })
+		    .y(function(d) { return y(d["2014"]); });
+		    
+		var valueline6 = d3.svg.line()
+		    .x(function(d) { return x(byState); })
+		    .y(function(d) { return y(d["2015"]); });
+    
+    var valueline7 = d3.svg.line()
+		    .x(function(d) { return x(byState); })
+		    .y(function(d) { return y(d["2016"]); });
+
+		// Adds the svg canvas
+		var svg = d3.select("body")
+		    .append("svg")
+		    .attr("width", width + margin.left + margin.right)
+		    .attr("height", height + margin.top + margin.bottom)
+		    .append("g")
+		    .attr("transform",
+		    "translate(" + margin.left + "," + margin.top + ")");
+
+		// Get the data
+		d3.csv("luxury_watch.csv", function(error, data) {
+			if (error) throw error;
+
+			// format the data
+			data.forEach(function(d) {
+				d["2010"] = +d["2010"];
+        d["2011"] = +d["2011"];
+        d["2012"] = +d["2012"];
+        d["2013"] = +d["2013"];
+        d["2014"] = +d["2014"];
+        d["2015"] = +d["2015"];
+        d["2016"] = +d["2016"];
+			});
+      byState = d3.group(data, d => d.State)
+			// Set the domain of the axes
+			x.domain(data.map(function(d) { return byState; }));
+			y.domain([0, d3.max(data, function(d) {
+				return Math.max(d["2010"], d["2011"], d["2012"], d["2013"], d["2014"], d["2015"], d["2016"]);
+			})]);
+
+// Add the valueline paths
+			svg.append("path")
+				.attr("class", "line1")
+				.attr("d", valueline1(data));
+
+			svg.append("path")
+				.attr("class", "line2")
+				.attr("d", valueline2(data));
+
+			svg.append("path")
+				.attr("class", "line3")
+				.attr("d", valueline3(data));
+      
+      svg.append("path")
+				.attr("class", "line4")
+				.attr("d", valueline4(data));
+
+			svg.append("path")
+				.attr("class", "line5")
+				.attr("d", valueline5(data));
+
+			svg.append("path")
+				.attr("class", "line6")
+				.attr("d", valueline6(data));
+      
+      svg.append("path")
+				.attr("class", "line7")
+				.attr("d", valueline7(data));
+
+			// Add the X Axis
+			svg.append("g")
+				.attr("class", "x axis")
+				.attr("transform", "translate(0," + height + ")")
+				.text("State")
+				.call(xAxis);
+			    
+
+			// Add the Y Axis
+			svg.append("g")
+				.attr("class", "y axis")
+				.call(yAxis);
+
+               //Add a title to x axis
+				svg.append("text")
+				.attr("class", "x label")
+				.attr("text-anchor", "end")
+				.attr("x", width)
+				.attr("y", height - 6)
+				.text("State");
+				 
+				//Add a title to Y axis
+				svg.append("text")
+            .attr("class", "axis-label")
+            .attr("text-anchor", "middle")
+			.attr("transform", "rotate(-90) translate(" + (-height/2) + "," + (-margin.left + 20) + ")")
+			.text("Population Estimates");
+
+
+			// Add a title to the chart
+			svg.append("text")
+				.attr("x", (width / 2))
+				.attr("y", 0 - (margin.top / 5))
+				.attr("text-anchor", "middle")
+				.style("font-size", "16px")
+				.text("State-wise population extimates from 2010 to 2016");
+
+			// Add a legend
+			var legend = svg.selectAll("g.legend")
+				.data(["2010", "2011", "2012","2013", "2014", "2015", "2016"])
+				.enter().append("g")
+				.attr("class", "legend")
+				.attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+			legend.append("rect")
+				.attr("x", width - 18)
+				.attr("width", 18)
+				.attr("height", 18)
+				.style("fill", function(d, i) { return ["blue", "green", "red", "orange", "yellow", "purple"][i]; });
+
+			legend.append("text")
+				.attr("x", width - 24)
+				.attr("y", 9)
+				.attr("dy", ".35em")
+				.style("text-anchor", "end")
+				.text(function(d) { return d; });
+		});
+	</script>
+</body>
+</html>
