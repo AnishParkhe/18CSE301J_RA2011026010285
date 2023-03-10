@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Population Estimates | Line Graph</title>
+	<title>Store Analysis | Line Graph</title>
 	<script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 </head>
 <body>
-	<h1>Population Estimates Line Graph</h1>
+	<h1>PStore Analysis Line Graph</h1>
 	<script>
 		// Set the dimensions of the canvas
 		var margin = {top: 20, right: 20, bottom: 30, left: 50},
@@ -31,30 +31,7 @@
 		    .x(function(d) { return x(byState); })
 		    .y(function(d) { return y(d["2010"]); });
 		    
-		var valueline2 = d3.svg.line()
-		    .x(function(d) { return x(byState); })
-		    .y(function(d) { return y(d["2011"]); });
-		    
-		var valueline3 = d3.svg.line()
-		    .x(function(d) { return x(byState); })
-		    .y(function(d) { return y(d["2012"]); });
-    
-    		var valueline4 = d3.svg.line()
-		    .x(function(d) { return x(byState); })
-		    .y(function(d) { return y(d["2013"]); });
-		    
-		var valueline5 = d3.svg.line()
-		    .x(function(d) { return x(byState); })
-		    .y(function(d) { return y(d["2014"]); });
-		    
-		var valueline6 = d3.svg.line()
-		    .x(function(d) { return x(byState); })
-		    .y(function(d) { return y(d["2015"]); });
-    
-    	var valueline7 = d3.svg.line()
-		    .x(function(d) { return x(byState); })
-		    .y(function(d) { return y(d["2016"]); });
-
+		
 		// Adds the svg canvas
 		var svg = d3.select("body")
 		    .append("svg")
@@ -65,54 +42,26 @@
 		    "translate(" + margin.left + "," + margin.top + ")");
 
 		// Get the data
-		d3.csv("POP_ESTIMATES.csv", function(error, data) {
+		d3.csv("Stores.csv", function(error, data) {
 			if (error) throw error;
 
 			// format the data
 			data.forEach(function(d) {
-				d["2010"] = +d["2010"];
-        d["2011"] = +d["2011"];
-        d["2012"] = +d["2012"];
-        d["2013"] = +d["2013"];
-        d["2014"] = +d["2014"];
-        d["2015"] = +d["2015"];
-        d["2016"] = +d["2016"];
+				d["Store_Area"] = +d["Store_Area"];
+				d["Store ID"] = +d["Store ID"];
+				d["Items_Available"] = +d["Items_Available"];
+				d["Daily_Customer_Count"] = +d["Daily_Customer_Count"];
+				d["Store_Sales"] = +d["Store_Sales"];
 			});
-      var byState = d3.group(data, d => d.State);
 			// Set the domain of the axes
-			x.domain(data.map(function(d) { return byState; }));
-			y.domain([0, d3.max(data, function(d) {
-				return Math.max(d["2010"], d["2011"], d["2012"], d["2013"], d["2014"], d["2015"], d["2016"]);
+			x.domain([0, d3.max(data, (d) => d.Store_Area)]);
+			y.domain([0, d3.max(data, (d) => d.Store_Sales)]);
 			})]);
 
 // Add the valueline paths
 			svg.append("path")
 				.attr("class", "line1")
 				.attr("d", valueline1(data));
-
-			svg.append("path")
-				.attr("class", "line2")
-				.attr("d", valueline2(data));
-
-			svg.append("path")
-				.attr("class", "line3")
-				.attr("d", valueline3(data));
-      
-      svg.append("path")
-				.attr("class", "line4")
-				.attr("d", valueline4(data));
-
-			svg.append("path")
-				.attr("class", "line5")
-				.attr("d", valueline5(data));
-
-			svg.append("path")
-				.attr("class", "line6")
-				.attr("d", valueline6(data));
-      
-      svg.append("path")
-				.attr("class", "line7")
-				.attr("d", valueline7(data));
 
 			// Add the X Axis
 			svg.append("g")
@@ -133,14 +82,14 @@
 				.attr("text-anchor", "end")
 				.attr("x", width)
 				.attr("y", height - 6)
-				.text("State");
+				.text("Store Area");
 				 
 				//Add a title to Y axis
 				svg.append("text")
             .attr("class", "axis-label")
             .attr("text-anchor", "middle")
 			.attr("transform", "rotate(-90) translate(" + (-height/2) + "," + (-margin.left + 20) + ")")
-			.text("Population Estimates");
+			.text("Store Sales");
 
 
 			// Add a title to the chart
@@ -149,7 +98,7 @@
 				.attr("y", 0 - (margin.top / 5))
 				.attr("text-anchor", "middle")
 				.style("font-size", "16px")
-				.text("State-wise population extimates from 2010 to 2016");
+				.text("Store Area to Store Sales Line Graph");
 
 			// Add a legend
 			var legend = svg.selectAll("g.legend")
@@ -162,7 +111,7 @@
 				.attr("x", width - 18)
 				.attr("width", 18)
 				.attr("height", 18)
-				.style("fill", function(d, i) { return ["blue", "green", "red", "orange", "yellow", "purple"][i]; });
+				.style("fill", function(d) { return ["blue"]; });
 
 			legend.append("text")
 				.attr("x", width - 24)
