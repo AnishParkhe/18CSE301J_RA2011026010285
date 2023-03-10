@@ -2,64 +2,65 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Store ID Sales Pie Chart</title>
+  <title>Pie Chart</title>
   <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 </head>
 <body>
-  <h1>Store Sales by Store ID</h1>
-<script>
-  d3.csv("Stores.csv", function(data) {
-    // Convert columns to numeric
-    data.forEach(function(d) {
-      d.Store_sales = +d.Store_sales;
-      d.Store_ID = +d.Store_ID;
-    });
+  <h1>Store Areas by Store ID</h1>
+  <script>
+    d3.csv("Stores.csv", function(data) {
+      // Convert columns to numeric
+      data.forEach(function(d) {
+        d.Store_ID = +d.Store_ID;
+        d.Store_Area = +d.Store_Area;
+        d.Items_Available = +d.Items_Available;
+        d.Daily_Customer_Count = +d.Daily_Customer_Count;
+        d.Store_Sales = +d.Store_Sales;
+      });
 
-    // Create pie chart
-    var width = 500;
-    var height = 500;
-    var radius = Math.min(width, height) / 2;
+      var width = 500,
+          height = 500,
+          radius = Math.min(width, height) / 2;
 
-    var color = d3.scale.category20();
+      var color = d3.scale.category20();
 
-    var arc = d3.svg.arc()
-        .outerRadius(radius - 10)
-        .innerRadius(0);
+      var arc = d3.svg.arc()
+          .outerRadius(radius - 10)
+          .innerRadius(0);
 
-    var pie = d3.layout.pie()
-        .sort(null)
-        .value(function(d) { return d.Store_sales; });
+      var pie = d3.layout.pie()
+          .sort(null)
+          .value(function(d) { return d.Store_Area; });
 
-    var svg = d3.select("body").append("svg")
-        .attr("width", width)
-        .attr("height", height)
-        .append("g")
-        .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+      var svg = d3.select("body").append("svg")
+          .attr("width", width)
+          .attr("height", height)
+          .append("g")
+          .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
-    var g = svg.selectAll(".arc")
-        .data(pie(data))
-        .enter().append("g")
-        .attr("class", "arc");
+      var g = svg.selectAll(".arc")
+          .data(pie(data))
+          .enter().append("g")
+          .attr("class", "arc");
 
-    g.append("path")
-        .attr("d", arc)
-        .style("fill", function(d) { return color(d.data.Store_id); });
+      g.append("path")
+          .attr("d", arc)
+          .style("fill", function(d) { return color(d.data.Store_ID); });
 
-    g.append("text")
-        .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
-        .attr("dy", ".35em")
-        .style("text-anchor", "middle")
-        .text(function(d) { return d.data.Store_id; });
-    
-    // Add the title for the pie chart
+      g.append("text")
+          .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
+          .attr("dy", ".35em")
+          .style("text-anchor", "middle")
+          .text(function(d) { return d.data.Store_ID; });
+      
+      // Add the title for the pie chart
       svg.append("text")
           .attr("x", 0)
           .attr("y", -height/2 + 20)
           .attr("text-anchor", "middle")
           .style("font-size", "16px")
-          .text("Store Sales by Store ID");
-  });
-</script>
-
+          .text("Store Areas by Store ID");
+    });
+  </script>
 </body>
 </html>
