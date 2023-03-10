@@ -44,6 +44,10 @@
       x.domain(d3.extent(data, function(d) { return d["Store Area"]; }));
       y.domain([0, d3.max(data, function(d) { return d["Store Sales"]; })]);
 
+console.log(x.domain()); // check the x scale domain
+console.log(y.domain()); // check the y scale domain
+
+
       // Add the valueline path.
       svg.append("path")
           .attr("class", "line")
